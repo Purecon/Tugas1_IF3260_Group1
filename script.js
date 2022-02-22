@@ -56,6 +56,20 @@ function main() {
   var positionBuffer = gl.createBuffer();
   var colorBuffer = gl.createBuffer();
 
+  //Setup UI slider
+  //Create slider
+  var size = [100,100]
+  setupSlider("#width", {value: size[0], slide: updateSize(0), max: gl.canvas.width });
+  setupSlider("#height", {value: size[1], slide: updateSize(1), max: gl.canvas.height});
+  //Check update
+  function updateSize(index) {
+    return function(event, ui) {
+      size[index] = ui.value;
+      drawScene();
+    };
+  }
+
+  //Draw cet
   function drawRectangle(item, index)
   {
     //console.log("Rectangle:",item);
@@ -65,9 +79,17 @@ function main() {
     // Create a buffer to put three 2d clip space points in
     // var positionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-    setRectangle(gl,rect_posx-50,rect_posy-50,100,100);
+
+    var width = item["size"][0]
+    var height = item["size"][1]
+    var half_width = width/2
+    var half_height = height/2
+    setRectangle(gl,rect_posx-half_width,rect_posy-half_height,width,height);
     // Simpan vertex
-    item["vertex"] = [[rect_posx-50,rect_posy-50],[rect_posx+50,rect_posy-50],[rect_posx-50,rect_posy+50],[rect_posx+50,rect_posy+50]]
+    item["vertex"] = [[rect_posx-half_width,rect_posy-half_height],
+                      [rect_posx+half_width,rect_posy-half_height],
+                      [rect_posx-half_width,rect_posy+half_height],
+                      [rect_posx+half_width,rect_posy+half_height]]
 
     // Create a buffer for the colors.
     // var colorBuffer = gl.createBuffer();
@@ -80,7 +102,8 @@ function main() {
     var g1 = item["colors"][2];
     setColors(gl,r1,b1,g1);
     
-    console.log("Data rectangle:",rectangles)
+    //DEBUG
+    //console.log("Data rectangle:",rectangles)
 
     drawImage();
   }
@@ -90,13 +113,19 @@ function main() {
     //Simpan rectangles
     var rectangle = [];
     rectangle["cordinates"] = [positionX,positionY];
-    //Color random
+    //Color random TEMP
     var r1 = Math.random();
     var b1 = Math.random();
     var g1 = Math.random();
     rectangle["colors"] = [r1,b1,g1];
+    //Size
+    rectangle["size"] = [size[0],size[1]];
     rectangles.push(rectangle);
-    //rectangles.push([positionX,positionY,r1,b1,g1]);
+    drawScene();
+  }
+
+  function drawScene(){
+    //Draw setiap rectangle
     rectangles.forEach(drawRectangle);
   }
 
@@ -315,6 +344,7 @@ function createProgramFromScripts(
   }
 
   // WebGL UI
+  // Setup UI
   const gopt = getQueryParams();
   function setupSlider(selector, options) {
     var parent = document.querySelector(selector);
@@ -328,6 +358,7 @@ function createProgramFromScripts(
     return createSlider(parent, options); // eslint-disable-line
   }
   
+  //Create slider
   function createSlider(parent, options) {
     var precision = options.precision || 0;
     var min = options.min || 0;
@@ -379,6 +410,7 @@ function createProgramFromScripts(
     };
   }
   
+  //Query params 
   function getQueryParams() {
     var params = {};
     if (window.hackedParams) {
