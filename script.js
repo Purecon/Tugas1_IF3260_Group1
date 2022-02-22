@@ -28,14 +28,27 @@ function main() {
     const rect = canvas.getBoundingClientRect();
     mouseX = e.clientX - rect.left;
     mouseY = rect.height - (e.clientY - rect.top) - 1;
+    for(var i in rectangles){
+      //DEBUG
+      //console.log(rectangles[i])
+
+      //For each element
+      var rect_loop = rectangles[i]["vertex"]
+      for(var j in rect_loop){
+        // var selisih_x = 
+        // var selisih_y =
+        if(mouseX==rect_loop[j][0] && mouseY==rect_loop[j][1]){
+          console.log("Near vertex",rect_loop[j])
+        }
+      }
+    }
   }
   canvas.addEventListener('mousemove', setMousePosition);
 
   var mouseClicked = false;
   canvas.addEventListener("mousedown", function(event){
     mouseClicked = true;
-    console.log("Clicked")
-    console.log(mouseX,mouseY);
+    console.log("Clicked",mouseX,mouseY)
     rectanglesProcess(mouseX,mouseY);
   });
   
@@ -120,7 +133,7 @@ function main() {
     rectangle["colors"] = [r1,b1,g1];
     //Size
     rectangle["size"] = [size[0],size[1]];
-    rectangles.push(rectangle);
+    rectangles.push(rectangle);  
     drawScene();
   }
 
