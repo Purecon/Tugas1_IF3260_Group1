@@ -59,27 +59,44 @@ function main() {
   function drawRectangle(item, index)
   {
     //console.log("Rectangle:",item);
-    var rect_posx = item[0];
-    var rect_posy = item[1];
+    var rect_posx = item["cordinates"][0];
+    var rect_posy = item["cordinates"][1];
 
     // Create a buffer to put three 2d clip space points in
     // var positionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     setRectangle(gl,rect_posx-50,rect_posy-50,100,100);
+    // Simpan vertex
+    item["vertex"] = [[rect_posx-50,rect_posy-50],[rect_posx+50,rect_posy-50],[rect_posx-50,rect_posy+50],[rect_posx+50,rect_posy+50]]
 
     // Create a buffer for the colors.
     // var colorBuffer = gl.createBuffer();
     // Bind the color buffer.
     gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-    setColors(gl);
+
+    //Set warna
+    var r1 = item["colors"][0];
+    var b1 = item["colors"][1];
+    var g1 = item["colors"][2];
+    setColors(gl,r1,b1,g1);
     
+    console.log("Data rectangle:",rectangles)
+
     drawImage();
   }
 
   //Click handler for square
   function rectanglesProcess(positionX,positionY) {
     //Simpan rectangles
-    rectangles.push([positionX,positionY]);
+    var rectangle = [];
+    rectangle["cordinates"] = [positionX,positionY];
+    //Color random
+    var r1 = Math.random();
+    var b1 = Math.random();
+    var g1 = Math.random();
+    rectangle["colors"] = [r1,b1,g1];
+    rectangles.push(rectangle);
+    //rectangles.push([positionX,positionY,r1,b1,g1]);
     rectangles.forEach(drawRectangle);
   }
 
@@ -159,11 +176,11 @@ function setRectangle(gl, x, y, width, height) {
 // that make the rectangle.
 // Note, will put the values in whatever buffer is currently
 // bound to the ARRAY_BUFFER bind point
-function setColors(gl) {
+function setColors(gl,r1,b1,g1) {
   // Pick 2 random colors.
-  var r1 = Math.random();
-  var b1 = Math.random();
-  var g1 = Math.random();
+  // var r1 = Math.random();
+  // var b1 = Math.random();
+  // var g1 = Math.random();
   // var r2 = Math.random();
   // var b2 = Math.random();
   // var g2 = Math.random();
@@ -295,6 +312,89 @@ function createProgramFromScripts(
         topWindow.console.log(msg);
       }
     }
+  }
+
+  // WebGL UI
+  const gopt = getQueryParams();
+  function setupSlider(selector, options) {
+    var parent = document.querySelector(selector);
+    if (!parent) {
+      // like jquery don't fail on a bad selector
+      return;
+    }
+    if (!options.name) {
+      options.name = selector.substring(1);
+    }
+    return createSlider(parent, options); // eslint-disable-line
+  }
+  
+  function createSlider(parent, options) {
+    var precision = options.precision || 0;
+    var min = options.min || 0;
+    var step = options.step || 1;
+    var value = options.value || 0;
+    var max = options.max || 1;
+    var fn = options.slide;
+    var name = gopt["ui-" + options.name] || options.name;
+    var uiPrecision = options.uiPrecision === undefined ? precision : options.uiPrecision;
+    var uiMult = options.uiMult || 1;
+  
+    min /= step;
+    max /= step;
+    value /= step;
+  
+    //gman widget
+    parent.innerHTML = `
+      <div class="gman-widget-outer">
+        <div class="gman-widget-label">${name}</div>
+        <div class="gman-widget-value"></div>
+        <input class="gman-widget-slider" type="range" min="${min}" max="${max}" value="${value}" />
+      </div>
+    `;
+    var valueElem = parent.querySelector(".gman-widget-value");
+    var sliderElem = parent.querySelector(".gman-widget-slider");
+  
+    function updateValue(value) {
+      valueElem.textContent = (value * step * uiMult).toFixed(uiPrecision);
+    }
+  
+    updateValue(value);
+  
+    function handleChange(event) {
+      var value = parseInt(event.target.value);
+      updateValue(value);
+      fn(event, { value: value * step });
+    }
+  
+    sliderElem.addEventListener('input', handleChange);
+    sliderElem.addEventListener('change', handleChange);
+  
+    return {
+      elem: parent,
+      updateValue: (v) => {
+        v /= step;
+        sliderElem.value = v;
+        updateValue(v);
+      },
+    };
+  }
+  
+  function getQueryParams() {
+    var params = {};
+    if (window.hackedParams) {
+      Object.keys(window.hackedParams).forEach(function(key) {
+        params[key] = window.hackedParams[key];
+      });
+    }
+    if (window.location.search) {
+      window.location.search.substring(1).split("&").forEach(function(pair) {
+        var keyValue = pair.split("=").map(function(kv) {
+          return decodeURIComponent(kv);
+        });
+        params[keyValue[0]] = keyValue[1];
+      });
+    }
+    return params;
   }
 
 main();
