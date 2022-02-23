@@ -1,12 +1,48 @@
-<canvas id="canvas" width="512" height="512 "></canvas>
-<div>
+<canvas id="canvas" width="512" height="512" style="border:1px solid #000000;"></canvas>
+<div id="editchoice">
   <h2> CLICK up here on the canvas! </h2>
-  <select id="mymenu" size="7 ">
+  <label for="editmenu">Choose mode add or edit:</label>
+  <select id="editmenu" size="2">
+    <option value="0 ">Add</option>
+    <option value="1 ">Edit</option>
+  </select>
+</div>
+
+<div id="shape">
+  </select>
+  <label for="mymenu">Choose shape to add:</label>
+  <select id="mymenu" size="4">
     <option value="0 ">Line</option>
     <option value="1 ">Square</option>
+    <option value="2 ">Rectangle</option>
   </select>
-  <button id="clearButton">Clear</button>
 </div>
+
+<div id="color">
+</select>
+<label for="colormenu">Choose color to add or edit:</label>
+<select id="colormenu" size="4">
+  <option value="0 ">Red</option>
+    <option value="1 ">Black</option>
+    <option value="2 ">Yellow</option>
+    <option value="3 ">Green</option>
+    <option value="4 ">Blue</option>
+    <option value="5 ">Magenta</option>
+    <option value="6 ">Cyan</option>
+</select>
+</div>
+
+<label for="clearButton">Click to clear canvas:</label>
+<button id="clearButton">Clear</button>
+
+<div id="square_slider">
+  <div id="side"></div>
+</div>
+<div id="rectangle_slider">
+  <div id="width"></div>
+  <div id="height"></div>
+</div>
+
 
 <!-- vertex shader -->
 <script  id="vertex-shader-2d" type="notjs">
