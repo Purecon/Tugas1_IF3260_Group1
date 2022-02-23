@@ -10,16 +10,16 @@ function main() {
 
   //Get edit options
   var edit_index = 0
-  var m = document.getElementById("editmenu");
-  m.addEventListener("click", function() {
-    edit_index = m.selectedIndex;
+  var m1 = document.getElementById("editmenu");
+  m1.addEventListener("click", function() {
+    edit_index = m1.selectedIndex;
   });
 
   //Get shape options
   var shape_index = 1
-  var m = document.getElementById("mymenu");
-  m.addEventListener("click", function() {
-    shape_index = m.selectedIndex;
+  var m2 = document.getElementById("mymenu");
+  m2.addEventListener("click", function() {
+    shape_index = m2.selectedIndex;
     setVisibleSlider();
     createSlider();
   });
@@ -56,9 +56,9 @@ function main() {
 
   var color_index = 0
   var current_color = colors[color_index]
-  var m = document.getElementById("colormenu");
-  m.addEventListener("click", function() {
-    color_index = m.selectedIndex;
+  var m3 = document.getElementById("colormenu");
+  m3.addEventListener("click", function() {
+    color_index = m3.selectedIndex;
     current_color = colors[color_index]
   });
 
@@ -172,7 +172,29 @@ function main() {
     if(edit_index==0){
       rectanglesProcess(mouseX,mouseY);
     }
+    else if(edit_index==1){
+      rectangleColor(mouseX,mouseY);
+    }
   });
+
+  function rectangleColor(mouseX,mouseY){
+    for(var i in rectangles){
+      //DEBUG
+      //console.log(rectangles[i])
+
+      //For each rectangle
+      var rect_center = rectangles[i]["coordinates"]
+      var selisih_x = Math.abs(mouseX-rect_center[0])
+      var selisih_y = Math.abs(mouseY-rect_center[1])
+      if(selisih_x<=rectangles[i]["size"][0] && selisih_y<=rectangles[i]["size"][1]){
+        rectangles[i]["colors"][0] = current_color[0];
+        rectangles[i]["colors"][1] = current_color[1];
+        rectangles[i]["colors"][2] = current_color[2];
+        drawScene();
+      }
+    }
+  }
+  
   
   canvas.addEventListener("mouseup", function(event){
     mouseClicked = false;
