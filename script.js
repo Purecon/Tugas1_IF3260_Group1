@@ -186,7 +186,8 @@ function main() {
       var rect_center = rectangles[i]["coordinates"]
       var selisih_x = Math.abs(mouseX-rect_center[0])
       var selisih_y = Math.abs(mouseY-rect_center[1])
-      if(selisih_x<=rectangles[i]["size"][0] && selisih_y<=rectangles[i]["size"][1]){
+      console.log("selisih",i,selisih_x,selisih_y)
+      if(selisih_x<=(rectangles[i]["size"][0]/2) && selisih_y<=(rectangles[i]["size"][1]/2)){
         rectangles[i]["colors"][0] = current_color[0];
         rectangles[i]["colors"][1] = current_color[1];
         rectangles[i]["colors"][2] = current_color[2];
