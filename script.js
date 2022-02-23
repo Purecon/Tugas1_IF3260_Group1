@@ -8,6 +8,13 @@ function main() {
     return;
   }
 
+  //Get edit options
+  var edit_index = 0
+  var m = document.getElementById("editmenu");
+  m.addEventListener("click", function() {
+    edit_index = m.selectedIndex;
+  });
+
   //Tempat menyimpan posisi TEMP
   var rectangles = [];
 
@@ -28,17 +35,75 @@ function main() {
     const rect = canvas.getBoundingClientRect();
     mouseX = e.clientX - rect.left;
     mouseY = rect.height - (e.clientY - rect.top) - 1;
-    for(var i in rectangles){
-      //DEBUG
-      //console.log(rectangles[i])
+    if(edit_index==1 && mouseClicked){
+      for(var i in rectangles){
+        //DEBUG
+        //console.log(rectangles[i])
+  
+        //For each element
+        var rect_loop = rectangles[i]["vertex"]
+        for(var j in rect_loop){
+          var selisih_x = Math.abs(mouseX-rect_loop[j][0])
+          var selisih_y = Math.abs(mouseY-rect_loop[j][1])
+          
+          if(selisih_x<10 && selisih_y<10){
+            var width = rectangles[i]["size"][0]
+            var height = rectangles[i]["size"][1]
+            var new_width = 0
+            var new_height = 0
+            if(j==0){
+              //DEBUG
+              //console.log("Near vertex kiri bawah",rect_loop[j])
 
-      //For each element
-      var rect_loop = rectangles[i]["vertex"]
-      for(var j in rect_loop){
-        // var selisih_x = 
-        // var selisih_y =
-        if(mouseX==rect_loop[j][0] && mouseY==rect_loop[j][1]){
-          console.log("Near vertex",rect_loop[j])
+              //update size
+              new_width = rectangles[i]["vertex"][1][0]-mouseX
+              new_height = rectangles[i]["vertex"][2][1]-mouseY
+              rectangles[i]["size"] = [new_width,new_height] 
+              //update coordinate tengah
+              rectangles[i]["coordinates"][0] = mouseX+new_width/2 
+              rectangles[i]["coordinates"][1] = mouseY+new_height/2
+              drawScene();
+            }
+            else if(j==1){
+              //DEBUG
+              //console.log("Near vertex kanan bawah",rect_loop[j])
+
+              //update size
+              new_width = mouseX-rectangles[i]["vertex"][0][0]
+              new_height = rectangles[i]["vertex"][3][1]-mouseY
+              rectangles[i]["size"] = [new_width,new_height] 
+              //update coordinate tengah
+              rectangles[i]["coordinates"][0] = mouseX-new_width/2 
+              rectangles[i]["coordinates"][1] = mouseY+new_height/2
+              drawScene();
+            }
+            else if(j==2){
+              //DEBUG
+              //console.log("Near vertex kiri atas",rect_loop[j])
+
+              //update size
+              new_width = rectangles[i]["vertex"][3][0]-mouseX
+              new_height = mouseY-rectangles[i]["vertex"][0][1]
+              rectangles[i]["size"] = [new_width,new_height] 
+              //update coordinate tengah
+              rectangles[i]["coordinates"][0] = mouseX+new_width/2 
+              rectangles[i]["coordinates"][1] = mouseY-new_height/2
+              drawScene();
+            }
+            else if(j==3){
+              //DEBUG
+              //console.log("Near vertex kanan atas",rect_loop[j])
+
+              //update size
+              new_width = mouseX-rectangles[i]["vertex"][2][0]
+              new_height = mouseY-rectangles[i]["vertex"][1][1]
+              rectangles[i]["size"] = [new_width,new_height] 
+              //update coordinate tengah
+              rectangles[i]["coordinates"][0] = mouseX-new_width/2 
+              rectangles[i]["coordinates"][1] = mouseY-new_height/2
+              drawScene();
+            }
+          }
         }
       }
     }
@@ -49,7 +114,9 @@ function main() {
   canvas.addEventListener("mousedown", function(event){
     mouseClicked = true;
     console.log("Clicked",mouseX,mouseY)
-    rectanglesProcess(mouseX,mouseY);
+    if(edit_index==0){
+      rectanglesProcess(mouseX,mouseY);
+    }
   });
   
   canvas.addEventListener("mouseup", function(event){
@@ -85,9 +152,11 @@ function main() {
   //Draw cet
   function drawRectangle(item, index)
   {
+    //DEBUG
     //console.log("Rectangle:",item);
-    var rect_posx = item["cordinates"][0];
-    var rect_posy = item["cordinates"][1];
+
+    var rect_posx = item["coordinates"][0];
+    var rect_posy = item["coordinates"][1];
 
     // Create a buffer to put three 2d clip space points in
     // var positionBuffer = gl.createBuffer();
@@ -97,13 +166,13 @@ function main() {
     var height = item["size"][1]
     var half_width = width/2
     var half_height = height/2
-    setRectangle(gl,rect_posx-half_width,rect_posy-half_height,width,height);
     // Simpan vertex
     item["vertex"] = [[rect_posx-half_width,rect_posy-half_height],
                       [rect_posx+half_width,rect_posy-half_height],
                       [rect_posx-half_width,rect_posy+half_height],
                       [rect_posx+half_width,rect_posy+half_height]]
-
+    setRectangle(gl,item["vertex"][0][0],item["vertex"][0][1],width,height);
+    
     // Create a buffer for the colors.
     // var colorBuffer = gl.createBuffer();
     // Bind the color buffer.
@@ -125,7 +194,8 @@ function main() {
   function rectanglesProcess(positionX,positionY) {
     //Simpan rectangles
     var rectangle = [];
-    rectangle["cordinates"] = [positionX,positionY];
+    //titik pusat yang di-klik
+    rectangle["coordinates"] = [positionX,positionY];
     //Color random TEMP
     var r1 = Math.random();
     var b1 = Math.random();
