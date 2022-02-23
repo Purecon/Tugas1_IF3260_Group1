@@ -15,6 +15,53 @@ function main() {
     edit_index = m.selectedIndex;
   });
 
+  //Get shape options
+  var shape_index = 1
+  var m = document.getElementById("mymenu");
+  m.addEventListener("click", function() {
+    shape_index = m.selectedIndex;
+    setVisibleSlider();
+    createSlider();
+  });
+
+  //Set visible slider
+  function setVisibleSlider(){
+    var square_slider = document.getElementById("square_slider");
+    var rectangle_slider= document.getElementById("rectangle_slider");
+    //Square
+    if(shape_index==1){
+      square_slider.style.display = "block";
+      rectangle_slider.style.display = "none";
+    }
+    //Rectangle
+    else if(shape_index==2){
+      square_slider.style.display = "none";
+      rectangle_slider.style.display = "block";
+    }
+  }
+
+  //Panggil saat inisialisasi
+  setVisibleSlider();
+
+  //Get color options
+  var colors = [
+    [1.0, 0.0, 0.0, 1.0], // red
+    [0.0, 0.0, 0.0, 1.0], // black
+    [1.0, 1.0, 0.0, 1.0], // yellow
+    [0.0, 1.0, 0.0, 1.0], // green
+    [0.0, 0.0, 1.0, 1.0], // blue
+    [1.0, 0.0, 1.0, 1.0], // magenta
+    [0.0, 1.0, 1.0, 1.0]  // cyan
+  ];
+
+  var color_index = 0
+  var current_color = colors[color_index]
+  var m = document.getElementById("colormenu");
+  m.addEventListener("click", function() {
+    color_index = m.selectedIndex;
+    current_color = colors[color_index]
+  });
+
   //Tempat menyimpan posisi TEMP
   var rectangles = [];
 
@@ -35,85 +82,88 @@ function main() {
     const rect = canvas.getBoundingClientRect();
     mouseX = e.clientX - rect.left;
     mouseY = rect.height - (e.clientY - rect.top) - 1;
+    //Edit mode
     if(edit_index==1 && mouseClicked){
-      for(var i in rectangles){
-        //DEBUG
-        //console.log(rectangles[i])
-  
-        //For each element
-        var rect_loop = rectangles[i]["vertex"]
-        for(var j in rect_loop){
-          var selisih_x = Math.abs(mouseX-rect_loop[j][0])
-          var selisih_y = Math.abs(mouseY-rect_loop[j][1])
+      editRectangle(mouseX,mouseY);
+    } 
+  }
+  canvas.addEventListener('mousemove', setMousePosition);
 
-          if(selisih_x<10 && selisih_y<10){
-            var width = rectangles[i]["size"][0]
-            var height = rectangles[i]["size"][1]
-            var new_width = 0
-            var new_height = 0
-            if(j==0){
-              //DEBUG
-              //console.log("Near vertex kiri bawah",rect_loop[j])
+  function editRectangle(mouseX,mouseY){
+    for(var i in rectangles){
+      //DEBUG
+      //console.log(rectangles[i])
 
-              //update size
-              new_width = rectangles[i]["vertex"][1][0]-mouseX
-              new_height = rectangles[i]["vertex"][2][1]-mouseY
-              if(new_width>0 && new_height>0){
-                rectangles[i]["size"] = [new_width,new_height] 
-                //update coordinate tengah
-                rectangles[i]["coordinates"][0] = mouseX+new_width/2 
-                rectangles[i]["coordinates"][1] = mouseY+new_height/2
-              }
+      //For each element
+      var rect_loop = rectangles[i]["vertex"]
+      for(var j in rect_loop){
+        var selisih_x = Math.abs(mouseX-rect_loop[j][0])
+        var selisih_y = Math.abs(mouseY-rect_loop[j][1])
+        
+        if(selisih_x<10 && selisih_y<10){
+          var new_width = 0
+          var new_height = 0
+          if(j==0){
+            //DEBUG
+            //console.log("Near vertex kiri bawah",rect_loop[j])
+
+            //update size
+            new_width = rectangles[i]["vertex"][1][0]-mouseX
+            new_height = rectangles[i]["vertex"][2][1]-mouseY
+            if(new_width>0 && new_height>0){
+              rectangles[i]["size"] = [new_width,new_height] 
+              //update coordinate tengah
+              rectangles[i]["coordinates"][0] = mouseX+new_width/2 
+              rectangles[i]["coordinates"][1] = mouseY+new_height/2
             }
-            else if(j==1){
-              //DEBUG
-              //console.log("Near vertex kanan bawah",rect_loop[j])
-
-              //update size
-              new_width = mouseX-rectangles[i]["vertex"][0][0]
-              new_height = rectangles[i]["vertex"][3][1]-mouseY
-              if(new_width>0 && new_height>0){
-                rectangles[i]["size"] = [new_width,new_height] 
-                //update coordinate tengah
-                rectangles[i]["coordinates"][0] = mouseX-new_width/2 
-                rectangles[i]["coordinates"][1] = mouseY+new_height/2
-              }
-            }
-            else if(j==2){
-              //DEBUG
-              //console.log("Near vertex kiri atas",rect_loop[j])
-
-              //update size
-              new_width = rectangles[i]["vertex"][3][0]-mouseX
-              new_height = mouseY-rectangles[i]["vertex"][0][1]
-              if(new_width>0 && new_height>0){
-                rectangles[i]["size"] = [new_width,new_height] 
-                //update coordinate tengah
-                rectangles[i]["coordinates"][0] = mouseX+new_width/2 
-                rectangles[i]["coordinates"][1] = mouseY-new_height/2
-              }
-            }
-            else if(j==3){
-              //DEBUG
-              //console.log("Near vertex kanan atas",rect_loop[j])
-
-              //update size
-              new_width = mouseX-rectangles[i]["vertex"][2][0]
-              new_height = mouseY-rectangles[i]["vertex"][1][1]
-              if(new_width>0 && new_height>0){
-                rectangles[i]["size"] = [new_width,new_height] 
-                //update coordinate tengah
-                rectangles[i]["coordinates"][0] = mouseX-new_width/2 
-                rectangles[i]["coordinates"][1] = mouseY-new_height/2
-              }
-            }
-            drawScene();
           }
+          else if(j==1){
+            //DEBUG
+            //console.log("Near vertex kanan bawah",rect_loop[j])
+
+            //update size
+            new_width = mouseX-rectangles[i]["vertex"][0][0]
+            new_height = rectangles[i]["vertex"][3][1]-mouseY
+            if(new_width>0 && new_height>0){
+              rectangles[i]["size"] = [new_width,new_height] 
+              //update coordinate tengah
+              rectangles[i]["coordinates"][0] = mouseX-new_width/2 
+              rectangles[i]["coordinates"][1] = mouseY+new_height/2
+            }
+          }
+          else if(j==2){
+            //DEBUG
+            //console.log("Near vertex kiri atas",rect_loop[j])
+
+            //update size
+            new_width = rectangles[i]["vertex"][3][0]-mouseX
+            new_height = mouseY-rectangles[i]["vertex"][0][1]
+            if(new_width>0 && new_height>0){
+              rectangles[i]["size"] = [new_width,new_height] 
+              //update coordinate tengah
+              rectangles[i]["coordinates"][0] = mouseX+new_width/2 
+              rectangles[i]["coordinates"][1] = mouseY-new_height/2
+            }
+          }
+          else if(j==3){
+            //DEBUG
+            //console.log("Near vertex kanan atas",rect_loop[j])
+
+            //update size
+            new_width = mouseX-rectangles[i]["vertex"][2][0]
+            new_height = mouseY-rectangles[i]["vertex"][1][1]
+            if(new_width>0 && new_height>0){
+              rectangles[i]["size"] = [new_width,new_height] 
+              //update coordinate tengah
+              rectangles[i]["coordinates"][0] = mouseX-new_width/2 
+              rectangles[i]["coordinates"][1] = mouseY-new_height/2
+            }
+          }
+          drawScene();
         }
       }
     }
   }
-  canvas.addEventListener('mousemove', setMousePosition);
 
   var mouseClicked = false;
   canvas.addEventListener("mousedown", function(event){
@@ -144,12 +194,27 @@ function main() {
   //Setup UI slider
   //Create slider
   var size = [100,100]
-  setupSlider("#width", {value: size[0], slide: updateSize(0), max: gl.canvas.width });
-  setupSlider("#height", {value: size[1], slide: updateSize(1), max: gl.canvas.height});
+
+  //
+  function createSlider(){
+    setupSlider("#width", {value: size[0], slide: updateSize(0), max: gl.canvas.width });
+    setupSlider("#height", {value: size[1], slide: updateSize(1), max: gl.canvas.height});
+    setupSlider("#side", {value: size[1], slide: updateSize(), max: gl.canvas.height});
+  }
+  
+  createSlider();
+
   //Check update
   function updateSize(index) {
     return function(event, ui) {
       size[index] = ui.value;
+      drawScene();
+    };
+  }
+
+  function updateSize() {
+    return function(event, ui) {
+      size = [ui.value,ui.value];
       drawScene();
     };
   }
@@ -201,10 +266,10 @@ function main() {
     var rectangle = [];
     //titik pusat yang di-klik
     rectangle["coordinates"] = [positionX,positionY];
-    //Color random TEMP
-    var r1 = Math.random();
-    var b1 = Math.random();
-    var g1 = Math.random();
+    //Color random 
+    var r1 = current_color[0]
+    var b1 = current_color[1]
+    var g1 = current_color[2]
     rectangle["colors"] = [r1,b1,g1];
     //Size
     rectangle["size"] = [size[0],size[1]];
