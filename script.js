@@ -10,6 +10,7 @@ function main() {
 
   //Tempat menyimpan posisi TEMP
   var rectangles = [];
+  var polygons = [];
 
   //Clear data
   var c = document.getElementById("clearButton")
