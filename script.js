@@ -45,7 +45,7 @@ function main() {
         for(var j in rect_loop){
           var selisih_x = Math.abs(mouseX-rect_loop[j][0])
           var selisih_y = Math.abs(mouseY-rect_loop[j][1])
-          
+
           if(selisih_x<10 && selisih_y<10){
             var width = rectangles[i]["size"][0]
             var height = rectangles[i]["size"][1]
@@ -58,11 +58,12 @@ function main() {
               //update size
               new_width = rectangles[i]["vertex"][1][0]-mouseX
               new_height = rectangles[i]["vertex"][2][1]-mouseY
-              rectangles[i]["size"] = [new_width,new_height] 
-              //update coordinate tengah
-              rectangles[i]["coordinates"][0] = mouseX+new_width/2 
-              rectangles[i]["coordinates"][1] = mouseY+new_height/2
-              drawScene();
+              if(new_width>0 && new_height>0){
+                rectangles[i]["size"] = [new_width,new_height] 
+                //update coordinate tengah
+                rectangles[i]["coordinates"][0] = mouseX+new_width/2 
+                rectangles[i]["coordinates"][1] = mouseY+new_height/2
+              }
             }
             else if(j==1){
               //DEBUG
@@ -71,11 +72,12 @@ function main() {
               //update size
               new_width = mouseX-rectangles[i]["vertex"][0][0]
               new_height = rectangles[i]["vertex"][3][1]-mouseY
-              rectangles[i]["size"] = [new_width,new_height] 
-              //update coordinate tengah
-              rectangles[i]["coordinates"][0] = mouseX-new_width/2 
-              rectangles[i]["coordinates"][1] = mouseY+new_height/2
-              drawScene();
+              if(new_width>0 && new_height>0){
+                rectangles[i]["size"] = [new_width,new_height] 
+                //update coordinate tengah
+                rectangles[i]["coordinates"][0] = mouseX-new_width/2 
+                rectangles[i]["coordinates"][1] = mouseY+new_height/2
+              }
             }
             else if(j==2){
               //DEBUG
@@ -84,11 +86,12 @@ function main() {
               //update size
               new_width = rectangles[i]["vertex"][3][0]-mouseX
               new_height = mouseY-rectangles[i]["vertex"][0][1]
-              rectangles[i]["size"] = [new_width,new_height] 
-              //update coordinate tengah
-              rectangles[i]["coordinates"][0] = mouseX+new_width/2 
-              rectangles[i]["coordinates"][1] = mouseY-new_height/2
-              drawScene();
+              if(new_width>0 && new_height>0){
+                rectangles[i]["size"] = [new_width,new_height] 
+                //update coordinate tengah
+                rectangles[i]["coordinates"][0] = mouseX+new_width/2 
+                rectangles[i]["coordinates"][1] = mouseY-new_height/2
+              }
             }
             else if(j==3){
               //DEBUG
@@ -97,12 +100,14 @@ function main() {
               //update size
               new_width = mouseX-rectangles[i]["vertex"][2][0]
               new_height = mouseY-rectangles[i]["vertex"][1][1]
-              rectangles[i]["size"] = [new_width,new_height] 
-              //update coordinate tengah
-              rectangles[i]["coordinates"][0] = mouseX-new_width/2 
-              rectangles[i]["coordinates"][1] = mouseY-new_height/2
-              drawScene();
+              if(new_width>0 && new_height>0){
+                rectangles[i]["size"] = [new_width,new_height] 
+                //update coordinate tengah
+                rectangles[i]["coordinates"][0] = mouseX-new_width/2 
+                rectangles[i]["coordinates"][1] = mouseY-new_height/2
+              }
             }
+            drawScene();
           }
         }
       }
