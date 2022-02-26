@@ -10,7 +10,7 @@ function main() {
 
   //Get edit options
   var edit_index = 0
-  var m1 = document.getElementById("editmenu");
+  var m1 = document.getElementById("editmenu"); 
   m1.addEventListener("click", function() {
     edit_index = m1.selectedIndex;
   });
@@ -26,17 +26,25 @@ function main() {
 
   //Set visible slider
   function setVisibleSlider(){
+    var square_slider = document.getElementById("line_slider");
     var square_slider = document.getElementById("square_slider");
     var rectangle_slider= document.getElementById("rectangle_slider");
+    if(shape_index==0){
+        line_slider.style.display = "block";
+        square_slider.style.display = "none";
+        rectangle_slider.style.display = "none";
+      }
     //Square
-    if(shape_index==1){
-      square_slider.style.display = "block";
-      rectangle_slider.style.display = "none";
+    else if(shape_index==1){
+        line_slider.style.display = "none";
+        square_slider.style.display = "block";
+        rectangle_slider.style.display = "none";
     }
     //Rectangle
     else if(shape_index==2){
-      square_slider.style.display = "none";
-      rectangle_slider.style.display = "block";
+        line_slider.style.display = "none";
+        square_slider.style.display = "none";
+        rectangle_slider.style.display = "block";
     }
   }
 
@@ -176,6 +184,9 @@ function main() {
     else if(edit_index==0 && shape_index == 1){
         rectanglesProcess(mouseX,mouseY);
     }
+    else if(edit_index==0 && shape_index == 2){
+        rectanglesProcess(mouseX,mouseY);
+    }
     else if(edit_index==1){
         rectangleColor(mouseX,mouseY);
     }
@@ -217,8 +228,8 @@ function main() {
 
   var positionBuffer = gl.createBuffer();
   var colorBuffer = gl.createBuffer();
-  var positionBuffer1 = gl.createBuffer();
-  var colorBuffer1 = gl.createBuffer();
+//   var positionBuffer1 = gl.createBuffer();
+//   var colorBuffer1 = gl.createBuffer();
 
   //Setup UI slider
   //Create slider
@@ -227,6 +238,7 @@ function main() {
 
   //
   function createSlider(){
+    setupSlider("#length", {value: linesize, slide: updateLength(), max: gl.canvas.width});
     setupSlider("#width", {value: size[0], slide: updateSize(0), max: gl.canvas.width });
     setupSlider("#height", {value: size[1], slide: updateSize(1), max: gl.canvas.height});
     setupSlider("#side", {value: size[1], slide: updateSize(), max: gl.canvas.height});
@@ -235,6 +247,13 @@ function main() {
   createSlider();
 
   //Check update
+  function updateLength() {
+    return function(event, ui) {
+      linesize = ui.value;
+      drawLineScene();
+    };
+  }
+  
   function updateSize(index) {
     return function(event, ui) {
       size[index] = ui.value;
