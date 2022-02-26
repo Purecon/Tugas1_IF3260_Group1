@@ -64,13 +64,18 @@ function main() {
 
   //Tempat menyimpan posisi TEMP
   var rectangles = [];
+  var polygons = [];
+  var poly_index = 0
 
   //Clear data
   var c = document.getElementById("clearButton")
   c.addEventListener("click", function(){
     rectangles=[]
+    polygons=[]
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
+    //Index 
+    poly_index=0
   });
 
   //Click listener
@@ -169,9 +174,14 @@ function main() {
   canvas.addEventListener("mousedown", function(event){
     mouseClicked = true;
     console.log("Clicked",mouseX,mouseY)
-    if(edit_index==0){
+    //Shape index: 0(Line),1(Square),2(Rectangle),3(Polygon)
+    if(edit_index==0 && (shape_index==1 || shape_index==2)){
       rectanglesProcess(mouseX,mouseY);
     }
+    else if(edit_index==0 && shape_index==3){
+      polygonsProcess(mouseX,mouseY);
+    }
+    //Edit warna
     else if(edit_index==1){
       rectangleColor(mouseX,mouseY);
     }
@@ -196,7 +206,13 @@ function main() {
     }
   }
   
-  
+  var a = document.getElementById("Button1")
+    a.addEventListener("click", function(){
+    poly_index=0  
+    polygon = [];
+    drawScene();
+  });
+
   canvas.addEventListener("mouseup", function(event){
     mouseClicked = false;
   });
@@ -211,8 +227,18 @@ function main() {
   // look up uniform locations
   var resolutionUniformLocation = gl.getUniformLocation(program, "u_resolution");
 
+  // Buffer square/rect
   var positionBuffer = gl.createBuffer();
   var colorBuffer = gl.createBuffer();
+
+  // Buffer polygon
+  var maxNumVertices  = 200;
+  var bufferId = gl.createBuffer();
+  gl.bindBuffer( gl.ARRAY_BUFFER, bufferId );
+  gl.bufferData( gl.ARRAY_BUFFER, 8*maxNumVertices, gl.STATIC_DRAW );
+  var cBufferId = gl.createBuffer();
+  gl.bindBuffer( gl.ARRAY_BUFFER, cBufferId );
+  gl.bufferData( gl.ARRAY_BUFFER, 16*maxNumVertices, gl.STATIC_DRAW );
 
   //Setup UI slider
   //Create slider
@@ -280,7 +306,13 @@ function main() {
     //DEBUG
     //console.log("Data rectangle:",rectangles)
 
-    drawImage();
+    drawImageRect();
+  }
+
+  //Draw polygon 
+  function drawPolygon(item, index)
+  {
+    drawImagePoly(polygons[index]["polycount"])
   }
 
   //Click handler for square
@@ -289,7 +321,7 @@ function main() {
     var rectangle = [];
     //titik pusat yang di-klik
     rectangle["coordinates"] = [positionX,positionY];
-    //Color random 
+    //Color from choice 
     var r1 = current_color[0]
     var b1 = current_color[1]
     var g1 = current_color[2]
@@ -300,13 +332,51 @@ function main() {
     drawScene();
   }
 
+  var polygon = [];
+  //Click handler for polygon
+  function polygonsProcess(positionX,positionY) {
+    //Color current
+    var r1 = current_color[0]
+    var b1 = current_color[1]
+    var g1 = current_color[2]
+    //Simpan info
+    polygon["colors"] = [r1,b1,g1];
+    if(polygon["vertex"] == undefined){
+      polygon["vertex"] = []
+      polygon["vertex"].push([positionX,positionY])
+    }
+    else{
+      polygon["vertex"].push([positionX,positionY])
+    }
+    polygon["polycount"] = polygon["vertex"].length
+    //Bind ke buffer pos
+    var t  = vec2(positionX,positionY);
+    gl.bindBuffer( gl.ARRAY_BUFFER, bufferId );
+    gl.bufferSubData(gl.ARRAY_BUFFER, 8*poly_index, flatten(t));
+    
+    //Bind ke buffer color
+    t = vec4(r1,b1,g1,1);
+    gl.bindBuffer( gl.ARRAY_BUFFER, cBufferId );
+    gl.bufferSubData(gl.ARRAY_BUFFER, 16*poly_index, flatten(t));
+    polygons.push(polygon);  
+
+    poly_index++;
+    //DEBUG
+    //console.log("Polygons:",polygon);
+    //drawScene();
+  }
+
   function drawScene(){
     //Draw setiap rectangle
     rectangles.forEach(drawRectangle);
+    //Draw setiap polygon
+    //DEBUG
+    console.log("Polygons:",polygons);
+    polygons.forEach(drawPolygon);
   }
 
   //Draw the image
-  function drawImage(){
+  function drawImageRect(){
     resizeCanvasToDisplaySize(gl.canvas);
 
     // Tell WebGL how to convert from clip space to pixels
@@ -314,7 +384,7 @@ function main() {
 
     // Clear the canvas
     // gl.clearColor(0, 0, 0, 0);
-    //gl.clear(gl.COLOR_BUFFER_BIT);
+    // gl.clear(gl.COLOR_BUFFER_BIT);
 
     // Tell it to use our program (pair of shaders)
     gl.useProgram(program);
@@ -358,6 +428,55 @@ function main() {
     var count = 6;
     gl.drawArrays(primitiveType, offset, count);
   }
+
+  function drawImagePoly(polycount){
+    resizeCanvasToDisplaySize(gl.canvas);
+
+    // Tell WebGL how to convert from clip space to pixels
+    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+
+    // Tell it to use our program (pair of shaders)
+    gl.useProgram(program);
+
+    // Turn on the attribute
+    gl.enableVertexAttribArray(positionAttributeLocation);
+
+    // Bind the position buffer.
+    gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
+
+    // Tell the attribute how to get data out of positionBuffer (ARRAY_BUFFER)
+    var size = 2;          // 2 components per iteration
+    var type = gl.FLOAT;   // the data is 32bit floats
+    var normalize = false; // don't normalize the data
+    var stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
+    var offset = 0;        // start at the beginning of the buffer
+    gl.vertexAttribPointer(
+        positionAttributeLocation, size, type, normalize, stride, offset);
+
+    // set the resolution
+    gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height);
+
+    // Turn on the color attribute
+    gl.enableVertexAttribArray(colorAttributeLocation);
+
+    // Bind the color buffer.
+    gl.bindBuffer(gl.ARRAY_BUFFER, cBufferId);
+
+    // Tell the color attribute how to get data out of colorBuffer (ARRAY_BUFFER)
+    var size = 4;          // 4 components per iteration
+    var type = gl.FLOAT;   // the data is 32bit floats
+    var normalize = false; // don't normalize the data
+    var stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
+    var offset = 0;        // start at the beginning of the buffer
+    gl.vertexAttribPointer(
+      colorAttributeLocation, size, type, normalize, stride, offset);
+
+    // draw
+    var primitiveType = gl.TRIANGLE_FAN;
+    var offset = 0;
+    var count = polycount;
+    gl.drawArrays(primitiveType, offset, count);
+  }
 }
 
 
@@ -382,14 +501,7 @@ function setRectangle(gl, x, y, width, height) {
 // Note, will put the values in whatever buffer is currently
 // bound to the ARRAY_BUFFER bind point
 function setColors(gl,r1,b1,g1) {
-  // Pick 2 random colors.
-  // var r1 = Math.random();
-  // var b1 = Math.random();
-  // var g1 = Math.random();
-  // var r2 = Math.random();
-  // var b2 = Math.random();
-  // var g2 = Math.random();
-
+  // Pick colors.
   gl.bufferData(
       gl.ARRAY_BUFFER,
       new Float32Array(

@@ -1,8 +1,8 @@
-var m = document.getElementById("mymenu");
+// var m = document.getElementById("mymenu");
 
-m.addEventListener("click", function() {
-   cindex = m.selectedIndex;
-    });
+// m.addEventListener("click", function() {
+//    cindex = m.selectedIndex;
+//     });
 
 var a = document.getElementById("Button1")
 a.addEventListener("click", function(){
