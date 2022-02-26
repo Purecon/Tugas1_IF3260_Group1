@@ -209,6 +209,8 @@ function main() {
   var a = document.getElementById("Button1")
     a.addEventListener("click", function(){
     poly_index=0  
+    //Push data polygon
+    polygons.push(polygon);  
     polygon = [];
     drawScene();
   });
@@ -234,9 +236,10 @@ function main() {
   // Buffer polygon
   var maxNumVertices  = 200;
   var bufferId = gl.createBuffer();
+  var cBufferId = gl.createBuffer();
+  //Bind buffer
   gl.bindBuffer( gl.ARRAY_BUFFER, bufferId );
   gl.bufferData( gl.ARRAY_BUFFER, 8*maxNumVertices, gl.STATIC_DRAW );
-  var cBufferId = gl.createBuffer();
   gl.bindBuffer( gl.ARRAY_BUFFER, cBufferId );
   gl.bufferData( gl.ARRAY_BUFFER, 16*maxNumVertices, gl.STATIC_DRAW );
 
@@ -358,7 +361,6 @@ function main() {
     t = vec4(r1,b1,g1,1);
     gl.bindBuffer( gl.ARRAY_BUFFER, cBufferId );
     gl.bufferSubData(gl.ARRAY_BUFFER, 16*poly_index, flatten(t));
-    polygons.push(polygon);  
 
     poly_index++;
     //DEBUG
