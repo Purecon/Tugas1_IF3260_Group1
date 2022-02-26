@@ -74,7 +74,6 @@ function main() {
     polygons=[]
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
-    //Index 
     poly_index=0
   });
 
@@ -208,8 +207,8 @@ function main() {
   
   var a = document.getElementById("Button1")
     a.addEventListener("click", function(){
-    poly_index=0  
     //Push data polygon
+    polygon["start"] = poly_index-polygon["vertex"].length
     polygons.push(polygon);  
     polygon = [];
     drawScene();
@@ -315,7 +314,7 @@ function main() {
   //Draw polygon 
   function drawPolygon(item, index)
   {
-    drawImagePoly(polygons[index]["polycount"])
+    drawImagePoly(item["start"],item["polycount"])
   }
 
   //Click handler for square
@@ -431,7 +430,7 @@ function main() {
     gl.drawArrays(primitiveType, offset, count);
   }
 
-  function drawImagePoly(polycount){
+  function drawImagePoly(start,polycount){
     resizeCanvasToDisplaySize(gl.canvas);
 
     // Tell WebGL how to convert from clip space to pixels
@@ -475,7 +474,7 @@ function main() {
 
     // draw
     var primitiveType = gl.TRIANGLE_FAN;
-    var offset = 0;
+    var offset = start;
     var count = polycount;
     gl.drawArrays(primitiveType, offset, count);
   }
