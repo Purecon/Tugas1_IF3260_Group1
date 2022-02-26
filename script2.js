@@ -2,10 +2,8 @@
 
 var canvas;
 var gl;
-
 var maxNumVertices  = 200;
 var index = 0;
-
 var cindex = 0;
 
 var colors = [
