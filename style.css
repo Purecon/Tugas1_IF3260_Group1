@@ -1,0 +1,47 @@
+body{
+    background-color: #EEEBE6;
+}
+
+.container{
+    display: flex;
+    position: relative;
+}
+
+.container .sidebar{
+    position: fixed;
+    width: 250px;
+    height: 100%;
+    background-color: #5D4935;
+    padding : 10px 0;
+}
+
+.container .sidebar h2{
+    color: white;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.container .sidebar label{
+    color: white;
+    text-transform: capitalize;
+    text-align: left;
+    font-size: small;
+}
+
+.container .sidebar .choice-container{
+    margin-bottom: 10px;
+    padding-left: 10px;
+}
+
+.container .sidebar .sliderr{
+    color: white;
+    text-transform: capitalize;
+    font-size: small;
+    padding-left: 10px;
+}
+
+.main-content{
+    padding-left: 270px;
+    padding-top: 10px;
+}

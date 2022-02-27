@@ -1,56 +1,77 @@
-<canvas id="canvas" width="512" height="512" style="border:1px solid #000000;"></canvas>
-<div id="editchoice">
-  <h2> CLICK up here on the canvas! </h2>
-  <label for="editmenu">Choose mode add or edit:</label>
-  <select id="editmenu" size="2">
-    <option value="0 ">Add</option>
-    <option value="1 ">Edit</option>
-  </select>
+<div class = "container">
+  <div class = "sidebar">
+    <h2> Pilih Komponen </h2>
+    <div class="choice-container">
+      <div id="editchoice">
+        <label for="editmenu">Choose mode add or edit:</label><p></p>
+        <select id="editmenu" size="2">
+          <option value="0 ">Add</option>
+          <option value="1 ">Edit</option>
+        </select>
+      </div>
+   </div>
+
+   <div class="choice-container">
+    <div id="shape">
+      </select>
+      <label for="mymenu">Choose shape to add:</label><p></p>
+      <select id="mymenu" size="4">
+        <option value="0 ">Line</option>
+        <option value="1 ">Square</option>
+        <option value="2 ">Rectangle</option>
+        <option value="3 ">Polygon</option>
+      </select>
+    </div>
+   </div>
+
+   <div class="choice-container">
+    <div id="color">
+    </select>
+    <label for="colormenu">Choose color to add or edit:</label><p></p>
+    <select id="colormenu" size="4">
+      <option value="0 ">Red</option>
+        <option value="1 ">Black</option>
+        <option value="2 ">Yellow</option>
+        <option value="3 ">Green</option>
+        <option value="4 ">Blue</option>
+        <option value="5 ">Magenta</option>
+        <option value="6 ">Cyan</option>
+    </select>
+    </div>
+   </div>
+
+   <div class="choice-container">
+    <label for="clearButton">Click to clear canvas:</label><p></p>
+    <button id="clearButton">Clear</button><p></p>
+    <label for="drawPolygon">Click to draw polygon:</label><p></p>
+    <button id="drawPolygon">Draw Polygon</button><p></p>
+  </div>
+
+  <div class ="sliderr">
+    <label for="sliderr">Configure the attribute</label><p></p>
+    <div id="line_slider">
+      <div id="length"></div>
+    </div>
+    <div id="square_slider">
+      <div id="side"></div>
+    </div>
+    <div id="rectangle_slider">
+      <div id="width"></div>
+      <div id="height"></div>
+    </div>
+  </div>
+    
+  </div>
 </div>
 
-<div id="shape">
-  </select>
-  <label for="mymenu">Choose shape to add:</label>
-  <select id="mymenu" size="4">
-    <option value="0 ">Line</option>
-    <option value="1 ">Square</option>
-    <option value="2 ">Rectangle</option>
-    <option value="3 ">Polygon</option>
-  </select>
+
+<div class="main-content">
+  <h2> Klik Pada Canvas untuk Menggambar Komponen </h2>
+  <canvas id="canvas" width="1024" height="512" style="border:1px solid #000000;"></canvas>
+
 </div>
 
-<div id="color">
-</select>
-<label for="colormenu">Choose color to add or edit:</label>
-<select id="colormenu" size="4">
-  <option value="0 ">Red</option>
-    <option value="1 ">Black</option>
-    <option value="2 ">Yellow</option>
-    <option value="3 ">Green</option>
-    <option value="4 ">Blue</option>
-    <option value="5 ">Magenta</option>
-    <option value="6 ">Cyan</option>
-</select>
-</div>
-
-<label for="clearButton">Click to clear canvas:</label>
-<button id="clearButton">Clear</button>
-
-<button id="Button1">End Button</button>
-
-<div id="line_slider">
-  <div id="length"></div>
-</div>
-
-<div id="square_slider">
-  <div id="side"></div>
-</div>
-<div id="rectangle_slider">
-  <div id="width"></div>
-  <div id="height"></div>
-</div>
-
-
+<link rel="stylesheet" href="style.css">
 
 <!-- vertex shader -->
 <script  id="vertex-shader-2d" type="notjs">

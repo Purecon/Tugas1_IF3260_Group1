@@ -14,6 +14,7 @@ function main() {
   m1.addEventListener("click", function() {
     edit_index = m1.selectedIndex;
   });
+  console.log(edit_index)
 
   //Get shape options
   var shape_index = 1
@@ -23,6 +24,7 @@ function main() {
     setVisibleSlider();
     createSlider();
   });
+  console.log(shape_index)
 
   //Set visible slider
   function setVisibleSlider(){
@@ -355,7 +357,7 @@ function main() {
     }
   }
   
-  var a = document.getElementById("Button1")
+  var a = document.getElementById("drawPolygon")
     a.addEventListener("click", function(){
     //Push data polygon
     polygon["start"] = poly_index-polygon["vertex"].length
