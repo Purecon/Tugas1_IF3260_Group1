@@ -99,10 +99,83 @@ function main() {
     //Edit mode
     if(edit_index==1 && mouseClicked){
       editRectangle(mouseX,mouseY);
-      editPolygon(mouseX,mouseY)
+      editPolygon(mouseX,mouseY);
+      editLine(mouseX,mouseY)
     } 
   }
   canvas.addEventListener('mousemove', setMousePosition);
+
+  function editLine(mouseX,mouseY){
+    console.log("masuk edit line")
+    for(var i in lines){
+      //DEBUG
+      //console.log(rectangles[i])
+      var vertex = lines[i]["changedvertex"] === undefined ? "vertex" : "changedvertex"
+      //For each element
+      var line_loop = lines[i][vertex]
+      for(var j in line_loop){
+        var selisih_x = Math.abs(mouseX-line_loop[j][0])
+        var selisih_y = Math.abs(mouseY-line_loop[j][1])
+        
+        if(selisih_x<10 && selisih_y<10){
+          var d_x = 0
+          var d_y = 0
+          if(j==0){
+            //DEBUG
+            // console.log("titik di kanan",line_loop[j])
+            // console.log(selisih_x)
+            // console.log(selisih_y)
+          
+            //update size
+            d_x = mouseX - lines[i][vertex][0][0]
+            d_y = mouseY - lines[i][vertex][0][1]
+            var length1 = [Math.sqrt(
+                              Math.pow(
+                                  mouseX - lines[i][vertex][1][0], 2
+                              ) +
+                              Math.pow(
+                                  mouseY - lines[i][vertex][1][1], 2
+                              ) 
+                          )]
+            lines[i]["length"] =  Math.round(length1[0])
+            //update coordinate tengah
+            lines[i]["coordinates"][0] = lines[i]["coordinates"][0] + d_x
+            lines[i]["coordinates"][1] = lines[i]["coordinates"][1] + d_y
+
+            //update vertex baru
+            lines[i]["changedvertex"] = [[mouseX, mouseY],[lines[i][vertex][1][0],lines[i][vertex][1][1]]]
+          
+          }
+          else if(j==1){
+            // //DEBUG
+            // console.log("titik di kiri",line_loop[j])
+            // console.log(selisih_x)
+            // console.log(selisih_y)
+
+            //update size
+            d_x = mouseX - lines[i][vertex][1][0]
+            d_y = mouseY - lines[i][vertex][1][1]
+            var length1 = [Math.sqrt(
+                              Math.pow(
+                                  mouseX - lines[i][vertex][0][0], 2
+                              ) +
+                              Math.pow(
+                                  mouseY - lines[i][vertex][0][1], 2
+                              ) 
+                          )]
+            lines[i]["length"] =  Math.round(length1[0])
+            //update coordinate tengah
+            lines[i]["coordinates"][0] = lines[i]["coordinates"][0] + d_x
+            lines[i]["coordinates"][1] = lines[i]["coordinates"][1] + d_y
+
+            //update vertex baru
+            lines[i]["changedvertex"] = [[lines[i][vertex][0][0],lines[i][vertex][0][1]],[mouseX, mouseY]]
+          }
+          drawScene();
+        }
+      }
+    }
+  }
 
   function editRectangle(mouseX,mouseY){
     for(var i in rectangles){
@@ -370,10 +443,11 @@ function main() {
     var length = item["length"]
     var half_length = length/2
     // Simpan vertex
-    item["vertex"] = [[line_posx+half_length,line_posy],
-                      [line_posx-half_length,line_posy]]
+    
     
     if (item["changedvertex"] === undefined){
+        item["vertex"] = [[line_posx+half_length,line_posy],
+                          [line_posx-half_length,line_posy]]
         setLine(gl,item["vertex"][0][0],item["vertex"][0][1],item["vertex"][1][0],item["vertex"][1][1]);
     }
 
