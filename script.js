@@ -183,13 +183,13 @@ function main() {
           //Set vertex baru
           poly_loop[j] = [mouseX,mouseY]
           //DEBUG
-          // console.log("Polygon sesudah:",poly_loop[j])
-          // console.log("Poly_index",polygons[i]["start"]+j)
+          console.log("Polygon sesudah:",poly_loop[j])
+          console.log("Poly_index",parseInt(polygons[i]["start"])+parseInt(j))
 
           //Bind ke buffer
           gl.bindBuffer( gl.ARRAY_BUFFER, bufferId );
           //Indeks polygon polygons[i]["start"]+j
-          gl.bufferSubData(gl.ARRAY_BUFFER, 8*(polygons[i]["start"]+j), flatten(poly_loop[j]));
+          gl.bufferSubData(gl.ARRAY_BUFFER, 8*(parseInt(polygons[i]["start"])+parseInt(j)), flatten(poly_loop[j]));
           drawScene();
         }
       }
