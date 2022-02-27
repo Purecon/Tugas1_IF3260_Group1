@@ -1,5 +1,6 @@
 const express = require('express')
 let fs = require('fs')
+const { finished } = require('stream')
 const app = express()
 
 const port = 3000
@@ -46,7 +47,8 @@ for (var i=0;i< data_polygon.length;i++){
     saveData.jsonData8[i] = data_color_polygon[i]
 }
 
-const jsonData = JSON.stringify(saveData)
+const jsonData = JSON.stringify(saveData,null,2)
+fs.writeFile('buffer_all.json',saveData,finished)
 /*
 const saveData1 = (data_line) =>{
     const jsonData1 = JSON.stringify(data_line)
