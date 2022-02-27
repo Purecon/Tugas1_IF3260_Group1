@@ -24,6 +24,28 @@ const saveData = {
     jsonData7 = [],
     jsonData8 = []
 }
+
+for (var i=0;i< data_line.length;i++){
+    saveData.jsonData1[i] = data_line[i]
+    saveData.jsonData2[i] = data_color_line[i]
+}
+
+for (var i=0;i< data_square.length;i++){
+    saveData.jsonData3[i] = data_square[i]
+    saveData.jsonData4[i] = data_color_square[i]
+}
+
+for (var i=0;i< data_rectangle.length;i++){
+    saveData.jsonData5[i] = data_rectangle[i]
+    saveData.jsonData6[i] = data_color_rectangle[i]
+}
+
+for (var i=0;i< data_polygon.length;i++){
+    saveData.jsonData7[i] = data_polygon[i]
+    saveData.jsonData8[i] = data_color_polygon[i]
+}
+
+const jsonData = JSON.stringify(saveData)
 /*
 const saveData1 = (data_line) =>{
     const jsonData1 = JSON.stringify(data_line)
