@@ -36,27 +36,17 @@ const saveData = {
     jsonData8 : []
 }
 
-for (var i=0;i< j_line.length;i++){
-    saveData.jsonData1[i] = j_line[i]
-    saveData.jsonData2[i] = j_c_line[i]
-}
+saveData.jsonData1 = j_line
+saveData.jsonData2 = j_c_line
+saveData.jsonData3 = j_square
+saveData.jsonData4 = j_c_square
+saveData.jsonData5 = j_rectangle
+saveData.jsonData6 = j_c_rectangle
+saveData.jsonData7 = j_polygon
+saveData.jsonData8 = j_c_polygon
 
-for (var i=0;i< j_square.length;i++){
-    saveData.jsonData3[i] = j_square[i]
-    saveData.jsonData4[i] = j_c_square[i]
-}
 
-for (var i=0;i< j_rectangle.length;i++){
-    saveData.jsonData5[i] = j_rectangle[i]
-    saveData.jsonData6[i] = j_c_rectangle[i]
-}
-
-for (var i=0;i< j_polygon.length;i++){
-    saveData.jsonData7[i] = j_polygon[i]
-    saveData.jsonData8[i] = j_c_polygon[i]
-}
-
-const jsonData = JSON.parse(saveData.toString(),null,2)
+const jsonData = JSON.stringify(saveData,null,2)
 fs.writeFile('buffer_all.json',saveData,finished)
 /*
 const saveData1 = (data_line) =>{
