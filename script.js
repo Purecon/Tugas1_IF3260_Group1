@@ -214,6 +214,7 @@ function main() {
     if (edit_index==0 && shape_index==0){
       linesProcess(mouseX,mouseY);
     }
+
     else if(edit_index==0 && (shape_index==1 || shape_index==2)){
       rectanglesProcess(mouseX,mouseY);
     }
@@ -446,23 +447,6 @@ function main() {
   }
 
   //Click handler for square
-  function rectanglesProcess(positionX,positionY) {
-    //Simpan rectangles
-    var rectangle = [];
-    //titik pusat yang di-klik
-    rectangle["coordinates"] = [positionX,positionY];
-    //Color from choice 
-    var r1 = current_color[0]
-    var b1 = current_color[1]
-    var g1 = current_color[2]
-    rectangle["colors"] = [r1,b1,g1];
-    //Size
-    rectangle["size"] = [size[0],size[1]];
-    rectangles.push(rectangle);  
-    drawScene();
-  }
-
-  //Click handler for square
   function linesProcess(positionX,positionY) {
     //Simpan rectangles
     var line = [];
@@ -476,6 +460,23 @@ function main() {
     //Size
     line["length"] = [linesize];
     lines.push(line);  
+    drawScene();
+  }
+  
+  //Click handler for square
+  function rectanglesProcess(positionX,positionY) {
+    //Simpan rectangles
+    var rectangle = [];
+    //titik pusat yang di-klik
+    rectangle["coordinates"] = [positionX,positionY];
+    //Color from choice 
+    var r1 = current_color[0]
+    var b1 = current_color[1]
+    var g1 = current_color[2]
+    rectangle["colors"] = [r1,b1,g1];
+    //Size
+    rectangle["size"] = [size[0],size[1]];
+    rectangles.push(rectangle);  
     drawScene();
   }
 
@@ -522,8 +523,7 @@ function main() {
   }
 
   //Draw the image
-  function drawLineImage(){
-    
+  function drawImageRect(){
     resizeCanvasToDisplaySize(gl.canvas);
 
     // Tell WebGL how to convert from clip space to pixels
@@ -531,7 +531,7 @@ function main() {
 
     // Clear the canvas
     // gl.clearColor(0, 0, 0, 0);
-    //gl.clear(gl.COLOR_BUFFER_BIT);
+    // gl.clear(gl.COLOR_BUFFER_BIT);
 
     // Tell it to use our program (pair of shaders)
     gl.useProgram(program);
