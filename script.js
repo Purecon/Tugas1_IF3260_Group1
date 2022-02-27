@@ -26,17 +26,25 @@ function main() {
 
   //Set visible slider
   function setVisibleSlider(){
+    var square_slider = document.getElementById("line_slider");
     var square_slider = document.getElementById("square_slider");
     var rectangle_slider= document.getElementById("rectangle_slider");
+    if(shape_index==0){
+        line_slider.style.display = "block";
+        square_slider.style.display = "none";
+        rectangle_slider.style.display = "none";
+      }
     //Square
-    if(shape_index==1){
-      square_slider.style.display = "block";
-      rectangle_slider.style.display = "none";
+    else if(shape_index==1){
+        line_slider.style.display = "none";
+        square_slider.style.display = "block";
+        rectangle_slider.style.display = "none";
     }
     //Rectangle
     else if(shape_index==2){
-      square_slider.style.display = "none";
-      rectangle_slider.style.display = "block";
+        line_slider.style.display = "none";
+        square_slider.style.display = "none";
+        rectangle_slider.style.display = "block";
     }
   }
 
@@ -63,6 +71,7 @@ function main() {
   });
 
   //Tempat menyimpan posisi TEMP
+  var lines = [];
   var rectangles = [];
   var polygons = [];
   var poly_index = 0
@@ -70,6 +79,7 @@ function main() {
   //Clear data
   var c = document.getElementById("clearButton")
   c.addEventListener("click", function(){
+    lines=[]
     rectangles=[]
     polygons=[]
     gl.clearColor(0, 0, 0, 0);
@@ -201,7 +211,11 @@ function main() {
     mouseClicked = true;
     console.log("Clicked",mouseX,mouseY)
     //Shape index: 0(Line),1(Square),2(Rectangle),3(Polygon)
-    if(edit_index==0 && (shape_index==1 || shape_index==2)){
+    if (edit_index==0 && shape_index==0){
+      linesProcess(mouseX,mouseY);
+    }
+
+    else if(edit_index==0 && (shape_index==1 || shape_index==2)){
       rectanglesProcess(mouseX,mouseY);
     }
     else if(edit_index==0 && shape_index==3){
@@ -308,15 +322,24 @@ function main() {
   //Setup UI slider
   //Create slider
   var size = [100,100]
+  var linesize = 100
 
   //
   function createSlider(){
+    setupSlider("#length", {value: linesize, slide: updateLength(), max: gl.canvas.width});
     setupSlider("#width", {value: size[0], slide: updateSize(0), max: gl.canvas.width });
     setupSlider("#height", {value: size[1], slide: updateSize(1), max: gl.canvas.height});
     setupSlider("#side", {value: size[1], slide: updateSize(), max: gl.canvas.height});
   }
   
   createSlider();
+
+  function updateLength() {
+    return function(event, ui) {
+      linesize = ui.value;
+      drawScene();
+    };
+  }
 
   //Check update
   function updateSize(index) {
@@ -331,6 +354,49 @@ function main() {
       size = [ui.value,ui.value];
       drawScene();
     };
+  }
+
+  function drawLine(item, index)
+  {
+    //DEBUG
+    //console.log("Rectangle:",item);
+    var line_posx = item["coordinates"][0];
+    var line_posy = item["coordinates"][1];
+
+    // Create a buffer to put three 2d clip space points in
+    // var positionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+
+    var length = item["length"]
+    var half_length = length/2
+    // Simpan vertex
+    item["vertex"] = [[line_posx+half_length,line_posy],
+                      [line_posx-half_length,line_posy]]
+    
+    if (item["changedvertex"] === undefined){
+        setLine(gl,item["vertex"][0][0],item["vertex"][0][1],item["vertex"][1][0],item["vertex"][1][1]);
+    }
+
+    else{
+        console.log("masuk ???")
+        setLine(gl,item["changedvertex"][0][0],item["changedvertex"][0][1],item["changedvertex"][1][0],item["changedvertex"][1][1]);
+    }
+    
+    // Create a buffer for the colors.
+    // var colorBuffer = gl.createBuffer();
+    // Bind the color buffer.
+    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+
+    //Set warna
+    var r1 = item["colors"][0];
+    var b1 = item["colors"][1];
+    var g1 = item["colors"][2];
+    setColorsLine(gl,r1,b1,g1);
+    
+    //DEBUG
+    //console.log("Data rectangle:",rectangles)
+
+    drawLineImage();
   }
 
   //Draw cet
@@ -380,6 +446,23 @@ function main() {
     drawImagePoly(item["start"],item["polycount"])
   }
 
+  //Click handler for square
+  function linesProcess(positionX,positionY) {
+    //Simpan rectangles
+    var line = [];
+    //titik pusat yang di-klik
+    line["coordinates"] = [positionX,positionY];
+    //Color random 
+    var r1 = current_color[0]
+    var b1 = current_color[1]
+    var g1 = current_color[2]
+    line["colors"] = [r1,b1,g1];
+    //Size
+    line["length"] = [linesize];
+    lines.push(line);  
+    drawScene();
+  }
+  
   //Click handler for square
   function rectanglesProcess(positionX,positionY) {
     //Simpan rectangles
@@ -435,7 +518,67 @@ function main() {
     rectangles.forEach(drawRectangle);
     //Draw setiap polygon
     polygons.forEach(drawPolygon);
+    //Draw setiap lines
+    lines.forEach(drawLine);
   }
+
+  //Draw the image
+  function drawImageRect(){
+    resizeCanvasToDisplaySize(gl.canvas);
+
+    // Tell WebGL how to convert from clip space to pixels
+    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+
+    // Clear the canvas
+    // gl.clearColor(0, 0, 0, 0);
+    // gl.clear(gl.COLOR_BUFFER_BIT);
+
+    // Tell it to use our program (pair of shaders)
+    gl.useProgram(program);
+
+    // Turn on the attribute
+    gl.enableVertexAttribArray(positionAttributeLocation);
+
+    // Bind the position buffer.
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+
+
+    // Tell the attribute how to get data out of positionBuffer (ARRAY_BUFFER)
+    var size = 2;          // 2 components per iteration
+    var type = gl.FLOAT;   // the data is 32bit floats
+    var normalize = false; // don't normalize the data
+    var stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
+    var offset = 0;        // start at the beginning of the buffer
+    gl.vertexAttribPointer(
+        positionAttributeLocation, size, type, normalize, stride, offset);
+    
+    
+    // set the resolution
+    gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height);
+
+    // Turn on the color attribute
+    gl.enableVertexAttribArray(colorAttributeLocation);
+
+    // Bind the color buffer.
+    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+
+
+    // Tell the color attribute how to get data out of colorBuffer (ARRAY_BUFFER)
+    var size = 4;          // 4 components per iteration
+    var type = gl.FLOAT;   // the data is 32bit floats
+    var normalize = false; // don't normalize the data
+    var stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
+    var offset = 0;        // start at the beginning of the buffer
+    gl.vertexAttribPointer(
+        colorAttributeLocation, size, type, normalize, stride, offset);
+
+    // draw
+    var primitiveType = gl.LINES;
+    var offset = 0;
+    var count = 2;
+    gl.drawArrays(primitiveType, offset, count);
+  }
+
 
   //Draw the image
   function drawImageRect(){
@@ -573,6 +716,31 @@ function setColors(gl,r1,b1,g1) {
           r1, b1, g1, 1,
           r1, b1, g1, 1,
           r1, b1, g1, 1]),
+      gl.STATIC_DRAW);
+}
+
+// Fill the buffer with the values that define a rectangle.
+function setLine(gl, x1, y1, x2, y2) {
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+     x1, y1,
+     x2, y2,
+  ]), gl.STATIC_DRAW);
+}
+
+function setColorsLine(gl,r1,b1,g1) {
+  // Pick 2 random colors.
+  // var r1 = Math.random();
+  // var b1 = Math.random();
+  // var g1 = Math.random();
+  // var r2 = Math.random();
+  // var b2 = Math.random();
+  // var g2 = Math.random();
+  gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array(
+        [ r1, b1, g1, 1,
+          r1, b1, g1, 1,]
+        ),
       gl.STATIC_DRAW);
 }
 
