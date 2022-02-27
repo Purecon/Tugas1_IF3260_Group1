@@ -1,0 +1,23 @@
+{
+  "name": "garfkom",
+  "version": "1.0.0",
+  "description": "Tugas 1\r K04\r Group1",
+  "main": "MV.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Purecon/Tugas1_IF3260_Group1.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Purecon/Tugas1_IF3260_Group1/issues"
+  },
+  "homepage": "https://github.com/Purecon/Tugas1_IF3260_Group1#readme",
+  "dependencies": {
+    "express": "^4.17.3"
+  }
+}
