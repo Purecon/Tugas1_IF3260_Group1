@@ -14,6 +14,17 @@ const data_color_rectangle = []
 const data_polygon = []
 const data_color_polygon = []
 
+const saveData = {
+    jsonData1 = [],
+    jsonData2 = [],
+    jsonData3 = [],
+    jsonData4 = [],
+    jsonData5 = [],
+    jsonData6 = [],
+    jsonData7 = [],
+    jsonData8 = []
+}
+/*
 const saveData1 = (data_line) =>{
     const jsonData1 = JSON.stringify(data_line)
 }
@@ -45,3 +56,4 @@ const saveData7 = (data_polygon) =>{
 const saveData8 = (data_color_polygon) =>{
     const jsonData8 = JSON.stringify(data_color_polygon)
 }
+*/
