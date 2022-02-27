@@ -15,6 +15,7 @@
     <option value="0 ">Line</option>
     <option value="1 ">Square</option>
     <option value="2 ">Rectangle</option>
+    <option value="3 ">Polygon</option>
   </select>
 </div>
 
@@ -35,16 +36,18 @@
 <label for="clearButton">Click to clear canvas:</label>
 <button id="clearButton">Clear</button>
 
-<div id="square_slider">
-  <div id="side"></div>
-</div>
+<button id="Button1">End Button</button>
 <div id="line_slider">
   <div id="length"></div>
+</div>
+<div id="square_slider">
+  <div id="side"></div>
 </div>
 <div id="rectangle_slider">
   <div id="width"></div>
   <div id="height"></div>
 </div>
+
 
 
 <!-- vertex shader -->
@@ -82,4 +85,5 @@
   }
 </script>
 
+<script src="MV.js"></script>
 <script src="script.js"></script>
