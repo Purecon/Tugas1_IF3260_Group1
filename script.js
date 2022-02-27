@@ -89,6 +89,7 @@ function main() {
     //Edit mode
     if(edit_index==1 && mouseClicked){
       editRectangle(mouseX,mouseY);
+      editPolygon(mouseX,mouseY)
     } 
   }
   canvas.addEventListener('mousemove', setMousePosition);
@@ -169,6 +170,32 @@ function main() {
     }
   }
 
+  function editPolygon(mouseX,mouseY){
+    for(var i in polygons){
+      //For each element
+      var poly_loop = polygons[i]["vertex"]
+
+      for(var j in poly_loop){
+        var selisih_x = Math.abs(mouseX-poly_loop[j][0])
+        var selisih_y = Math.abs(mouseY-poly_loop[j][1])
+
+        if(selisih_x<10 && selisih_y<10){
+          //Set vertex baru
+          poly_loop[j] = [mouseX,mouseY]
+          //DEBUG
+          // console.log("Polygon sesudah:",poly_loop[j])
+          // console.log("Poly_index",polygons[i]["start"]+j)
+
+          //Bind ke buffer
+          gl.bindBuffer( gl.ARRAY_BUFFER, bufferId );
+          //Indeks polygon polygons[i]["start"]+j
+          gl.bufferSubData(gl.ARRAY_BUFFER, 8*(polygons[i]["start"]+j), flatten(poly_loop[j]));
+          drawScene();
+        }
+      }
+    }
+  }
+
   var mouseClicked = false;
   canvas.addEventListener("mousedown", function(event){
     mouseClicked = true;
@@ -183,6 +210,7 @@ function main() {
     //Edit warna
     else if(edit_index==1){
       rectangleColor(mouseX,mouseY);
+      polygonColor(mouseX,mouseY);
     }
   });
 
@@ -200,6 +228,41 @@ function main() {
         rectangles[i]["colors"][0] = current_color[0];
         rectangles[i]["colors"][1] = current_color[1];
         rectangles[i]["colors"][2] = current_color[2];
+        drawScene();
+      }
+    }
+  }
+
+  function polygonColor(mouseX,mouseY){
+    for(var i in polygons){
+      //For each element
+      var poly_loop = polygons[i]["vertex"]
+      var change_color = false
+
+      for(var j in poly_loop){
+        var selisih_x = Math.abs(mouseX-poly_loop[j][0])
+        var selisih_y = Math.abs(mouseY-poly_loop[j][1])
+        
+        if(selisih_x<10 && selisih_y<10){
+          //Set color baru
+          //Color current
+          var r1 = current_color[0]
+          var b1 = current_color[1]
+          var g1 = current_color[2]
+          //Simpan info
+          polygons[i]["colors"] = [r1,b1,g1];
+          change_color=true
+        }
+      }
+
+      //Ubah jika berubah warna
+      if(change_color){
+        for(var j in poly_loop){
+          //Bind ke buffer
+          gl.bindBuffer( gl.ARRAY_BUFFER, cBufferId );
+          //Indeks polygon polygons[i]["start"]+j
+          gl.bufferSubData(gl.ARRAY_BUFFER, 16*(polygons[i]["start"]+j), flatten(polygons[i]["colors"]));
+        }
         drawScene();
       }
     }
@@ -371,8 +434,6 @@ function main() {
     //Draw setiap rectangle
     rectangles.forEach(drawRectangle);
     //Draw setiap polygon
-    //DEBUG
-    console.log("Polygons:",polygons);
     polygons.forEach(drawPolygon);
   }
 
