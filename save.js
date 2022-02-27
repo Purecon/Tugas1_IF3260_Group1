@@ -15,39 +15,48 @@ const data_rectangle = []
 const data_color_rectangle = []
 const data_polygon = []
 const data_color_polygon = []
+    
+const j_line = JSON.stringify(data_line)
+const j_c_line = JSON.stringify(data_color_line)
+const j_square = JSON.stringify(data_square)
+const j_c_square = JSON.stringify(data_color_square)
+const j_rectangle = JSON.stringify(data_rectangle)
+const j_c_rectangle = JSON.stringify(data_color_rectangle)
+const j_polygon = JSON.stringify(data_polygon)
+const j_c_polygon = JSON.stringify(data_color_polygon)
 
 const saveData = {
-    jsonData1 = [],
-    jsonData2 = [],
-    jsonData3 = [],
-    jsonData4 = [],
-    jsonData5 = [],
-    jsonData6 = [],
-    jsonData7 = [],
-    jsonData8 = []
+    jsonData1 : [],
+    jsonData2 : [],
+    jsonData3 : [],
+    jsonData4 : [],
+    jsonData5 : [],
+    jsonData6 : [],
+    jsonData7 : [],
+    jsonData8 : []
 }
 
-for (var i=0;i< data_line.length;i++){
-    saveData.jsonData1[i] = data_line[i]
-    saveData.jsonData2[i] = data_color_line[i]
+for (var i=0;i< j_line.length;i++){
+    saveData.jsonData1[i] = j_line[i]
+    saveData.jsonData2[i] = j_c_line[i]
 }
 
-for (var i=0;i< data_square.length;i++){
-    saveData.jsonData3[i] = data_square[i]
-    saveData.jsonData4[i] = data_color_square[i]
+for (var i=0;i< j_square.length;i++){
+    saveData.jsonData3[i] = j_square[i]
+    saveData.jsonData4[i] = j_c_square[i]
 }
 
-for (var i=0;i< data_rectangle.length;i++){
-    saveData.jsonData5[i] = data_rectangle[i]
-    saveData.jsonData6[i] = data_color_rectangle[i]
+for (var i=0;i< j_rectangle.length;i++){
+    saveData.jsonData5[i] = j_rectangle[i]
+    saveData.jsonData6[i] = j_c_rectangle[i]
 }
 
-for (var i=0;i< data_polygon.length;i++){
-    saveData.jsonData7[i] = data_polygon[i]
-    saveData.jsonData8[i] = data_color_polygon[i]
+for (var i=0;i< j_polygon.length;i++){
+    saveData.jsonData7[i] = j_polygon[i]
+    saveData.jsonData8[i] = j_c_polygon[i]
 }
 
-const jsonData = JSON.stringify(saveData,null,2)
+const jsonData = JSON.parse(saveData.toString(),null,2)
 fs.writeFile('buffer_all.json',saveData,finished)
 /*
 const saveData1 = (data_line) =>{
