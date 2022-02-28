@@ -97,14 +97,37 @@ function main() {
   });
 
   //Load
-  // document.getElementById('inputfile').addEventListener('change', function() {
-  //   var fr=new FileReader();
-  //   fr.onload=function(){
-  //     document.getElementById('output').textContent=fr.result;
-  //   }
-  //   console.log(fr.result)
-  //   fr.readAsText(this.files[0]);
-  // })
+  document.getElementById('inputfile').addEventListener('change', function() {
+    var fr=new FileReader();
+    fr.onload=function(){
+      //console.log(fr.result);
+      var parse_result = JSON.parse(fr.result)
+      console.log(JSON.parse(fr.result))
+      polygons = JSON.parse(parse_result["polygons"]) 
+      rectangles = JSON.parse(parse_result["rectangles"]) 
+      lines = JSON.parse(parse_result["lines"]) 
+      for(var i in polygons){
+        //For each element
+        var poly_loop = polygons[i]["vertex"]
+        for(var j in poly_loop){
+          //Bind ke buffer
+          gl.bindBuffer( gl.ARRAY_BUFFER, bufferId );
+          //Indeks polygon polygons[i]["start"]+j
+          gl.bufferSubData(gl.ARRAY_BUFFER, 8*(parseInt(polygons[i]["start"])+parseInt(j)), flatten(poly_loop[j]));
+         
+          var r1 = polygons[i]["colors"][0]
+          var b1 = polygons[i]["colors"][1]
+          var g1 = polygons[i]["colors"][2]
+          //Bind ke buffer color
+          var t = vec4(r1,b1,g1,1);
+          gl.bindBuffer( gl.ARRAY_BUFFER, cBufferId );
+          gl.bufferSubData(gl.ARRAY_BUFFER, 16*(parseInt(polygons[i]["start"])+parseInt(j)), flatten(t));
+        }
+      }
+      drawScene();
+    }
+    fr.readAsText(this.files[0]);
+  })
 
   //Click listener
   // const mouseLocation = gl.getUniformLocation(program, "u_mouse");
@@ -613,10 +636,12 @@ function main() {
     polygons.forEach(drawPolygon);
     //Draw setiap lines
     lines.forEach(drawLine);
+    console.log(polygons)
     console.log(rectangles)
-    console.log(JSON.stringify(polygons))
-    console.log(JSON.stringify(rectangles))
-    console.log(JSON.stringify(lines))
+    console.log(lines)
+    // console.log(JSON.stringify(polygons))
+    // console.log(JSON.stringify(rectangles))
+    // console.log(JSON.stringify(lines))
   }
 
   //Draw the image
