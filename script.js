@@ -404,7 +404,7 @@ function main() {
     setupSlider("#length", {value: linesize, slide: updateLength(), max: gl.canvas.width});
     setupSlider("#width", {value: size[0], slide: updateSize(0), max: gl.canvas.width });
     setupSlider("#height", {value: size[1], slide: updateSize(1), max: gl.canvas.height});
-    setupSlider("#side", {value: size[1], slide: updateSize(), max: gl.canvas.height});
+    setupSlider("#side", {value: size[1], slide: updateSizeSquare(), max: gl.canvas.height});
   }
   
   createSlider();
@@ -412,7 +412,7 @@ function main() {
   function updateLength() {
     return function(event, ui) {
       linesize = ui.value;
-      drawScene();
+      //drawScene();
     };
   }
 
@@ -420,14 +420,14 @@ function main() {
   function updateSize(index) {
     return function(event, ui) {
       size[index] = ui.value;
-      drawScene();
+      //drawScene();
     };
   }
 
-  function updateSize() {
+  function updateSizeSquare() {
     return function(event, ui) {
       size = [ui.value,ui.value];
-      drawScene();
+      //drawScene();
     };
   }
 
