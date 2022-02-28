@@ -60,6 +60,16 @@
         <div id="height"></div>
       </div>
     </div>
+
+    <div class="choice-container">
+      <label>Click to save:</label><p></p>
+      <form onsubmit="save(this['name'].value)">
+        <input type="text" name="name" value="test.txt">
+        <input type="submit" value="Download">
+      </form>
+      <label for="loadButton">Choose file to load:</label><p></p>
+      <input type="file" name="inputfile" id="inputfile">
+    </div>
   </div>
 </div>
 

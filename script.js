@@ -1,5 +1,9 @@
 "use strict";
 
+var lines = [];
+var rectangles = [];
+var polygons = [];
+
 function main() {
   // Get A WebGL context
   var canvas = document.querySelector("#canvas");
@@ -48,6 +52,12 @@ function main() {
         square_slider.style.display = "none";
         rectangle_slider.style.display = "block";
     }
+    //Polygon
+    else if(shape_index==3){
+      line_slider.style.display = "none";
+      square_slider.style.display = "none";
+      rectangle_slider.style.display = "none";
+    }
   }
 
   //Panggil saat inisialisasi
@@ -73,9 +83,6 @@ function main() {
   });
 
   //Tempat menyimpan posisi TEMP
-  var lines = [];
-  var rectangles = [];
-  var polygons = [];
   var poly_index = 0
 
   //Clear data
@@ -88,6 +95,16 @@ function main() {
     gl.clear(gl.COLOR_BUFFER_BIT);
     poly_index=0
   });
+
+  //Load
+  // document.getElementById('inputfile').addEventListener('change', function() {
+  //   var fr=new FileReader();
+  //   fr.onload=function(){
+  //     document.getElementById('output').textContent=fr.result;
+  //   }
+  //   console.log(fr.result)
+  //   fr.readAsText(this.files[0]);
+  // })
 
   //Click listener
   // const mouseLocation = gl.getUniformLocation(program, "u_mouse");
@@ -362,7 +379,7 @@ function main() {
     //Push data polygon
     polygon["start"] = poly_index-polygon["vertex"].length
     polygons.push(polygon);  
-    polygon = [];
+    polygon = {};
     drawScene();
   });
 
@@ -525,7 +542,7 @@ function main() {
   //Click handler for square
   function linesProcess(positionX,positionY) {
     //Simpan rectangles
-    var line = [];
+    var line = {};
     //titik pusat yang di-klik
     line["coordinates"] = [positionX,positionY];
     //Color random 
@@ -542,7 +559,7 @@ function main() {
   //Click handler for square
   function rectanglesProcess(positionX,positionY) {
     //Simpan rectangles
-    var rectangle = [];
+    var rectangle = {};
     //titik pusat yang di-klik
     rectangle["coordinates"] = [positionX,positionY];
     //Color from choice 
@@ -556,7 +573,7 @@ function main() {
     drawScene();
   }
 
-  var polygon = [];
+  var polygon = {};
   //Click handler for polygon
   function polygonsProcess(positionX,positionY) {
     //Color current
@@ -596,6 +613,10 @@ function main() {
     polygons.forEach(drawPolygon);
     //Draw setiap lines
     lines.forEach(drawLine);
+    console.log(rectangles)
+    console.log(JSON.stringify(polygons))
+    console.log(JSON.stringify(rectangles))
+    console.log(JSON.stringify(lines))
   }
 
   //Draw the image
@@ -1080,4 +1101,32 @@ function createProgramFromScripts(
     return params;
   }
 
+  //Save
+  function save(filename) {
+    var savedata = {};
+    savedata["polygons"] = JSON.stringify(polygons);
+    savedata["rectangles"] = JSON.stringify(rectangles);
+    savedata["lines"] = JSON.stringify(lines);
+
+    console.log("Saving")
+    // console.log(savedata)
+    // console.log(JSON.stringify(polygons))
+    // console.log(JSON.stringify(rectangles))
+    // console.log(JSON.stringify(lines))
+    // console.log("String",JSON.stringify(savedata))
+
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(savedata)));
+    element.setAttribute('download', filename);
+    
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+  }
+
 main();
+
+
