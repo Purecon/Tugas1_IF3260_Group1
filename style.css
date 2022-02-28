@@ -13,6 +13,9 @@ body{
     height: 100%;
     background-color: #5D4935;
     padding : 10px 0;
+    overflow-y: scroll;
+    top: 0;
+    bottom: 0;
 }
 
 .container .sidebar h2{
@@ -39,9 +42,10 @@ body{
     text-transform: capitalize;
     font-size: small;
     padding-left: 10px;
+    margin-bottom: 10px;
 }
 
 .main-content{
     padding-left: 270px;
-    padding-top: 10px;
+    padding-top : 10px;
 }
