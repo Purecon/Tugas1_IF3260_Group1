@@ -9,64 +9,64 @@
           <option value="1 ">Edit</option>
         </select>
       </div>
-   </div>
+    </div>
 
-   <div class="choice-container">
-    <div id="shape">
+    <div class="choice-container">
+      <div id="shape">
+        </select>
+        <label for="mymenu">Choose shape to add:</label><p></p>
+        <select id="mymenu" size="4">
+          <option value="0 ">Line</option>
+          <option value="1 ">Square</option>
+          <option value="2 ">Rectangle</option>
+          <option value="3 ">Polygon</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="choice-container">
+      <div id="color">
       </select>
-      <label for="mymenu">Choose shape to add:</label><p></p>
-      <select id="mymenu" size="4">
-        <option value="0 ">Line</option>
-        <option value="1 ">Square</option>
-        <option value="2 ">Rectangle</option>
-        <option value="3 ">Polygon</option>
+      <label for="colormenu">Choose color to add or edit:</label><p></p>
+      <select id="colormenu" size="4">
+        <option value="0 ">Red</option>
+          <option value="1 ">Black</option>
+          <option value="2 ">Yellow</option>
+          <option value="3 ">Green</option>
+          <option value="4 ">Blue</option>
+          <option value="5 ">Magenta</option>
+          <option value="6 ">Cyan</option>
       </select>
+      </div>
     </div>
-   </div>
 
-   <div class="choice-container">
-    <div id="color">
-    </select>
-    <label for="colormenu">Choose color to add or edit:</label><p></p>
-    <select id="colormenu" size="4">
-      <option value="0 ">Red</option>
-        <option value="1 ">Black</option>
-        <option value="2 ">Yellow</option>
-        <option value="3 ">Green</option>
-        <option value="4 ">Blue</option>
-        <option value="5 ">Magenta</option>
-        <option value="6 ">Cyan</option>
-    </select>
+    <div class="choice-container">
+      <label for="clearButton">Click to clear canvas:</label><p></p>
+      <button id="clearButton">Clear</button><p></p>
+      <label for="drawPolygon">Click to draw polygon:</label><p></p>
+      <button id="drawPolygon">Draw Polygon</button><p></p>
     </div>
-   </div>
 
-   <div class="choice-container">
-    <label for="clearButton">Click to clear canvas:</label><p></p>
-    <button id="clearButton">Clear</button><p></p>
-    <label for="drawPolygon">Click to draw polygon:</label><p></p>
-    <button id="drawPolygon">Draw Polygon</button><p></p>
-  </div>
-
-  <div class ="sliderr">
-    <label for="sliderr">Configure the attribute</label><p></p>
-    <div id="line_slider">
-      <div id="length"></div>
+    <div class ="sliderr">
+      <label for="sliderr">Configure the attribute</label><p></p>
+      <div id="line_slider">
+        <div id="length"></div>
+      </div>
+      <div id="square_slider">
+        <div id="side"></div>
+      </div>
+      <div id="rectangle_slider">
+        <div id="width"></div>
+        <div id="height"></div>
+      </div>
     </div>
-    <div id="square_slider">
-      <div id="side"></div>
-    </div>
-    <div id="rectangle_slider">
-      <div id="width"></div>
-      <div id="height"></div>
-    </div>
-  </div>
-    
   </div>
 </div>
 
 
 <div class="main-content">
   <h2> Klik Pada Canvas untuk Menggambar Komponen </h2>
+  <a href="help.html"><button id="help">Need Help?</button></a><p></p>
   <canvas id="canvas" width="1024" height="512" style="border:1px solid #000000;"></canvas>
 
 </div>

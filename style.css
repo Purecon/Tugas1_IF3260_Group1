@@ -49,3 +49,14 @@ body{
     padding-left: 270px;
     padding-top : 10px;
 }
+
+.helpmenu{
+    float: right;
+}
+
+.container-help li{
+    background-color: white;
+    margin-right: 25px;
+    padding-left: 10px;
+    padding-bottom: 10px;
+}
